@@ -10,13 +10,22 @@
     </div>
     <button id="btn">Reload</button>
 <script type="module">
-    const URL = 'https://api.thecatapi.com/v1/images/search'
+    const URL = 'https://api.thecatapi.com/v1/images/search?limit=2'
     const btn = document.querySelector('#btn')
     const app = document.querySelector('#app')
     async function reload (){
         const data = await fetch(URL)
         const toJson = await data.json()
-        app.innerHTML = renderImage(toJson[0].url)
+        if (toJson.length > 1){
+            toJson.map(item => {
+                const img = document.createElement('img')
+                img.src = item.url
+                app.appendChild(img)
+            })
+        }else {
+            const url = toJson[0].url
+            app.innerHTML = renderImage(url)
+        }
         console.log(toJson)
     }
 
