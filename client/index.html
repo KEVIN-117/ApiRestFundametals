@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Api rest JavaScript Fundamentos</title>
+</head>
+<body>
+    <div id="app">
+        <img width="150" src="">
+    </div>
+    <button id="btn">Reload</button>
+<script type="module">
+    const URL = 'https://api.thecatapi.com/v1/images/search'
+    const btn = document.querySelector('#btn')
+    const app = document.querySelector('#app')
+    async function reload (){
+        const data = await fetch(URL)
+        const toJson = await data.json()
+        app.innerHTML = renderImage(toJson[0].url)
+        console.log(toJson)
+    }
+
+    const renderImage = (url) =>{
+        return `<img src="${url}" alt="cat" />`
+    }
+    btn.addEventListener('click', reload)
+</script>
+</body>
+</html>
