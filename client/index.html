@@ -3,36 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <title>Api rest JavaScript Fundamentos</title>
+    <style>
+        :root{
+            color-scheme: light dark;
+        }
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body{
+            background-image: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1124&q=100');
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #btn{
+            width: 100px;
+            height: 50px;
+            border-radius: 10px;
+            border: none;
+            background-color: #f5f5f5;
+            color: #000;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        #app{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            height: auto;
+            backdrop-filter: blur(18px) saturate(129%);
+            -webkit-backdrop-filter: blur(18px) saturate(129%);
+            background-color: rgba(6, 21, 76, 0.63);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.125);
+        }
+        img{
+            width: 5%;
+            height: 50vh;
+            object-fit: cover;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            margin: 10px;
+            transition: all 0.3s ease-in-out;
+        }
+        img:hover{
+            flex: 0.8;
+            transition: all 0.6s cubic-bezier(0.075, 0.82, 0.165, 1);
+        }
+    </style>
+
 </head>
 <body>
     <div id="app">
-        <img width="150" src="">
+
     </div>
     <button id="btn">Reload</button>
-<script type="module">
-    const URL = 'https://api.thecatapi.com/v1/images/search?limit=2'
-    const btn = document.querySelector('#btn')
-    const app = document.querySelector('#app')
-    async function reload (){
-        const data = await fetch(URL)
-        const toJson = await data.json()
-        if (toJson.length > 1){
-            toJson.map(item => {
-                const img = document.createElement('img')
-                img.src = item.url
-                app.appendChild(img)
-            })
-        }else {
-            const url = toJson[0].url
-            app.innerHTML = renderImage(url)
+    <script type="module">
+        const URL = 'https://api.thecatapi.com/v1/images/search?limit=2'
+        const btn = document.querySelector('#btn')
+        const app = document.querySelector('#app')
+        async function reload (){
+            const data = await fetch(URL)
+            const toJson = await data.json()
+            if (data.status !== 200) {
+                const h1 = document.createElement('h1')
+                h1.textContent = `Hubo un error ${data.status} ${toJson.message}`
+                app.appendChild(h1)
+                return
+            }
+            if (toJson.length > 1){
+                toJson.slice(0,5).map(item => {
+                    const img = document.createElement('img')
+                    img.src = item.url
+                    app.appendChild(img)
+                })
+            }else {
+                const url = toJson[0].url
+                app.innerHTML = renderImage(url)
+            }
+            console.log(toJson)
         }
-        console.log(toJson)
-    }
 
-    const renderImage = (url) =>{
-        return `<img src="${url}" alt="cat" />`
-    }
-    btn.addEventListener('click', reload)
-</script>
+        const renderImage = (url) =>{
+            return `<img src="${url}" alt="cat" />`
+        }
+
+        const saveFavoriteImage = async (url) =>{
+            const data = await fetch(url, {
+                method: 'POST',
+                contentType: 'application/json',
+            })
+
+            console.log(data.json())
+        }
+        btn.addEventListener('click', reload)
+    </script>
 </body>
 </html>
